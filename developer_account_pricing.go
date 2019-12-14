@@ -67,6 +67,48 @@ func (s *DeveloperService) GetOutboundProductPricing(request GetOutboundProductP
 	return response, httpResponse, err
 }
 
+type GetFullOutboundProductPricingRequest struct {
+	Credentials
+	Product string `url:"-"`
+}
+
+type GetFullOutboundProductPricingResponse struct {
+	Count     int64               `json:"count"`
+	Countries []FullCountryPrices `json:"countries"`
+}
+
+type FullCountryPrices struct {
+	DialingPrefix      string               `json:"dialingPrefix"`
+	DefaultPrice       string               `json:"defaultPrice"`
+	Currency           string               `json:"currency"`
+	CountryDisplayName string               `json:"countryDisplayName"`
+	CountryCode        string               `json:"countryCode"`
+	CountryName        string               `json:"countryName"`
+	Networks           []FullNetworkDetails `json:"networks"`
+}
+
+type FullNetworkDetails struct {
+	Type        string   `json:"type"`
+	Price       string   `json:"price"`
+	Currency    string   `json:"currency"`
+	Aliases     []string `json:"aliases"`
+	MNC         string   `json:"mnc"`
+	MCC         string   `json:"mcc"`
+	NetworkCode string   `json:"networkCode"`
+	NetworkName string   `json:"networkName"`
+}
+
+// GetFullOutboundProductPricing requests prices for a product in a given country
+func (s *DeveloperService) GetFullOutboundProductPricing(request GetFullOutboundProductPricingRequest) (*GetFullOutboundProductPricingResponse, *http.Response, error) {
+	s.authSet.ApplyAPICredentials(&request)
+	response := new(GetFullOutboundProductPricingResponse)
+	httpResponse, err := s.sling.New().
+		Get(fmt.Sprintf("account/get-full-pricing/outbound/%s/", request.Product)).
+		QueryStruct(request).
+		ReceiveSuccess(response)
+	return response, httpResponse, err
+}
+
 type GetPrefixOutboundPricingRequest struct {
 	Credentials
 	Prefix string `url:"prefix"`
