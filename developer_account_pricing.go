@@ -91,7 +91,7 @@ type FullNetworkDetails struct {
 	Type        string   `json:"type"`
 	Price       string   `json:"price"`
 	Currency    string   `json:"currency"`
-	Aliases     []string `json:"aliases"`
+	Aliases     []string `json:"aliases,omitempty"`
 	MNC         string   `json:"mnc"`
 	MCC         string   `json:"mcc"`
 	NetworkCode string   `json:"networkCode"`
